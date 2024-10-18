@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Save User Data</title>
+</head>
+<body>
+    <h1>Prihlásenie</h1>
+
+    <form id="login-form">
+        <label for="login-email">E-mail alebo užívateľské meno:</label>
+        <input type="text" id="login-email" required><br><br>
+
+        <label for="login-password">Heslo:</label>
+        <input type="password" id="login-password" required><br><br>
+
+        <button type="button" id="save-button">Uložiť údaje</button>
+    </form>
+
+    <script>
+        document.getElementById('save-button').addEventListener('click', function () {
+            const emailOrUsername = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            const userData = {
+                emailOrUsername: emailOrUsername,
+                password: password
+            };
+
+            const userDataString = JSON.stringify(userData);
+            const blob = new Blob([userDataString], { type: 'application/json' });
+            const fileName = 'user_data.json';
+
+            if (window.navigator.msSaveOrOpenBlob) {
+                window.navigator.msSaveOrOpenBlob(blob, fileName);
+            } else {
+                const a = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            }
+        });
+    </script>
+</body>
+</html>
+
